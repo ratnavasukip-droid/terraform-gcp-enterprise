@@ -1,14 +1,11 @@
 output "notification_channel_id" {
-  description = "Notification channel resource name"
-  value       = google_monitoring_notification_channel.email_ops.name
+  description = "Notification channel resource id"
+  value       = google_monitoring_notification_channel.email_ops.id
 }
 
-output "alert_policy_name" {
-  description = "Alert policy resource name"
-  value       = google_monitoring_alert_policy.gke_high_cpu.name
+output "alert_policy_id" {
+  description = "Alert policy resource id"
+  value       = google_monitoring_alert_policy.gke_high_cpu.id
 }
 
-output "dashboard_name" {
-  description = "Dashboard resource name"
-  value       = google_monitoring_dashboard.gke_overview.name
-}
+// dashboard output removed because dashboard creation has been deferred

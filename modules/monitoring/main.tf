@@ -88,3 +88,4 @@ resource "google_monitoring_dashboard" "gke_overview" {
   depends_on = [google_project_service.monitoring_api, google_project_service.monitoring_dashboard_api]
 }
 
+

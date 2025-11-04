@@ -10,7 +10,4 @@ output "alert_policy_id" {
 
 // dashboard output removed because dashboard creation has been deferred
 
-output "dashboard_id" {
-  description = "Dashboard resource id"
-  value       = google_monitoring_dashboard.gke_overview.id
-}
+// dashboard output removed; dashboard creation is managed outside Terraform or after API enablement

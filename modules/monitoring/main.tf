@@ -46,3 +46,45 @@ resource "google_monitoring_alert_policy" "gke_high_cpu" {
 // Simple dashboard with a single chart for node CPU utilization for the cluster
 // Dashboard creation removed for now because enabling the Dashboard API requires
 // additional permissions in some projects. We keep alerting and notification channel.
+
+// Re-adding dashboard resource and dashboard API enablement.
+resource "google_project_service" "monitoring_dashboard_api" {
+  project = var.project_id
+  service = "monitoring.dashboard.googleapis.com"
+  disable_on_destroy = false
+}
+
+resource "google_monitoring_dashboard" "gke_overview" {
+  project = var.project_id
+
+  dashboard_json = <<-JSON
+  {
+    "displayName": "GKE - ${var.cluster_name} Overview",
+    "widgets": [
+      {
+        "title": "Node CPU utilization",
+        "xyChart": {
+          "dataSets": [
+            {
+              "timeSeriesQuery": {
+                "timeSeriesFilter": {
+                  "filter": "metric.type=\"compute.googleapis.com/instance/cpu/utilization\" resource.type=\"gce_instance\"",
+                  "aggregation": {
+                    "alignmentPeriod": "60s",
+                    "perSeriesAligner": "ALIGN_MEAN"
+                  }
+                }
+              }
+            }
+          ],
+          "timeshiftDuration": "0s",
+          "thresholds": []
+        }
+      }
+    ]
+  }
+  JSON
+
+  depends_on = [google_project_service.monitoring_api, google_project_service.monitoring_dashboard_api]
+}
+

@@ -133,6 +133,32 @@ resource "google_bigquery_dataset_iam_member" "log_writer_error" {
   project    = var.project_id
 }
 
+# Grant the logging sink writer identities permission to use the KMS key
+# Required when the BigQuery dataset is encrypted with a customer-managed key (CMEK)
+resource "google_kms_crypto_key_iam_member" "storage_sink_kms" {
+  crypto_key_id = var.kms_key_id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = google_logging_project_sink.storage_logs.writer_identity
+}
+
+resource "google_kms_crypto_key_iam_member" "bigquery_sink_kms" {
+  crypto_key_id = var.kms_key_id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = google_logging_project_sink.bigquery_logs.writer_identity
+}
+
+resource "google_kms_crypto_key_iam_member" "iam_sink_kms" {
+  crypto_key_id = var.kms_key_id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = google_logging_project_sink.iam_logs.writer_identity
+}
+
+resource "google_kms_crypto_key_iam_member" "error_sink_kms" {
+  crypto_key_id = var.kms_key_id
+  role          = "roles/cloudkms.cryptoKeyEncrypterDecrypter"
+  member        = google_logging_project_sink.error_logs.writer_identity
+}
+
 # Create view for BigQuery cost analysis
 # resource "google_bigquery_table" "bigquery_cost_view" {
 #   dataset_id = google_bigquery_dataset.logs.dataset_id

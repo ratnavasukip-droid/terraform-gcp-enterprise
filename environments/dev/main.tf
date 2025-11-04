@@ -159,6 +159,16 @@ module "gke" {
 
   depends_on = [module.networking]
 }
+# Monitoring: alerts and dashboards for cluster health
+module "monitoring" {
+  source = "../../modules/monitoring"
+
+  project_id = module.project.project_id
+  cluster_name = module.gke.cluster_name
+  notification_email = var.owner_email
+
+  depends_on = [module.gke]
+}
 # Create the Cloud Composer (Airflow) environment
 module "composer" {
   source = "../../modules/composer"
